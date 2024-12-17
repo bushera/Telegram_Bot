@@ -18,10 +18,16 @@ SUPPORT_ADMINS = [7753388625]  # Replace with Telegram user IDs of your support 
 async def redirect_to_private(update: Update, context: ContextTypes.DEFAULT_TYPE, command_text: str):
     """Redirect users to private chat if command is triggered in a group."""
     if update.message.chat.type != "private":  # Triggered in a group
+        # Create an inline keyboard with a link to the bot's private chat
+        button = [
+            [InlineKeyboardButton(f"Start private chat to use {command_text}", url=f"https://t.me/{BOT_USERNAME}?start=start")]
+        ]
+        reply_markup = InlineKeyboardMarkup(button)
         await update.message.reply_text(
-            f"To use the `{command_text}` command, please message me directly: "
-            f"https://t.me/{BOT_USERNAME}?start=start"
+            f"To use the `{command_text}` command, please start a private chat with me:",
+            reply_markup=reply_markup
         )
+        
     else:
         # Execute the appropriate command if already in private chat
         if command_text == "bookcall":
