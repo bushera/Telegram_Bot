@@ -7,6 +7,30 @@ from telegram.ext import (
     filters
 )
 
+# Bot username
+BOT_USERNAME = "@VaultSignalBot"  # Replace with your bot's username
+
+# Function to redirect users to private chat
+async def redirect_to_private(update: Update, context: ContextTypes.DEFAULT_TYPE, command_text: str):
+    if update.message.chat.type != "private":  # Only trigger redirection in group chats
+        button = [[InlineKeyboardButton("Click here to chat with me privately 🤖", url=f"https://t.me/{BOT_USERNAME}?start=start")]]
+        reply_markup = InlineKeyboardMarkup(button)
+        await update.message.reply_text(
+            f"Please start a private chat with me to use the `{command_text}` command. Click below 👇:",
+            reply_markup=reply_markup
+        )
+    else:
+        # If the user is already in private chat, execute the command
+        if command_text == "bookcall":
+            await book_call(update, context)
+        elif command_text == "feedback":
+            await feedback(update, context)
+        elif command_text == "support":
+            await support(update, context)
+        elif command_text == "help":
+            await help(update, context)
+
+
 # List of group admins or support team members
 SUPPORT_ADMINS = [7753388625]  # Replace with Telegram user IDs of your support team
 
@@ -130,6 +154,20 @@ async def support(update: Update, context: ContextTypes.DEFAULT_TYPE):
         except Exception as e:
             # Log or print error if message fails to send
             print(f"Error sending message to admin {admin_id}: {e}")
+
+
+# Modified Handlers
+async def handle_book_call(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await redirect_to_private(update, context, "bookcall")
+
+async def handle_feedback(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await redirect_to_private(update, context, "feedback")
+
+async def handle_support(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await redirect_to_private(update, context, "support")
+
+async def handle_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await redirect_to_private(update, context, "help")
 
 
 
