@@ -71,7 +71,7 @@ async def get_onboarded(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     await update.message.reply_text(
-        "Get access / change access to group discussions.",
+        "Get access to the SignalVault group discussions.",
         reply_markup=reply_markup,
     )
 
