@@ -257,6 +257,7 @@ def main():
     application.add_handler(CommandHandler("feedback", lambda u, c: redirect_to_private(u, c, "feedback")))
     application.add_handler(CommandHandler("support", lambda u, c: redirect_to_private(u, c, "support")))
     application.add_handler(CommandHandler("help", lambda u, c: redirect_to_private(u, c, "help")))
+    application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, user_joined))
     application.add_handler(MessageHandler(filters.TEXT, detect_intent))
     application.add_handler(MessageHandler(filters.ALL, detect_intent))  # For all message types
 
