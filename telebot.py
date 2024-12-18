@@ -1,13 +1,13 @@
 import requests
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, ChatPermissions
+from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import (
     Application,
     CommandHandler,
     MessageHandler,
+    CallbackQueryHandler,
     ContextTypes,
     filters,
 )
-import json
 
 # Bot Token and Webhook URLs
 BOT_TOKEN = "7225931117:AAFP4haOX6lHuTFvsElH-KhzYRNC53noF_M"  # Replace with your bot's token
@@ -15,7 +15,6 @@ BOT_USERNAME = "VaultSignalBot"  # Replace with your bot's username, without '@'
 SUPPORT_ADMINS = [7753388625]  # Replace with Telegram user IDs of your support team
 
 USER_JOINED_WEBHOOK = "https://hook.us2.make.com/7vhbgvnaseruqs9uuf244yfkqqgx9vuq"
-START_COMMAND_WEBHOOK = "https://hook.us2.make.com/1i7p27dunhnpint7bouo92ocm4hwsf5p"
 
 
 # Function: Trigger webhook for new user joins
@@ -42,26 +41,32 @@ async def user_joined(update: Update, context: ContextTypes.DEFAULT_TYPE):
         print(f"Error triggering webhook: {e}")
 
 
-# Function: Trigger webhook for /start command
+# Function: Start Command Handler
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
     user = update.effective_user
-    chat_id = update.effective_chat.id
 
-    await context.bot.send_message(chat_id=chat_id, text="👋 Welcome! I am processing your details...")
-
-    payload = {
-        "user_id": user.id,
-        "username": user.username or "Anonymous",
-        "first_name": user.first_name,
-        "last_name": user.last_name or "",
-        "chat_id": chat_id,
-    }
-    try:
-        requests.post(START_COMMAND_WEBHOOK, json=payload, timeout=10)
-    except Exception as e:
-        print(f"Error triggering webhook: {e}")
-
-    await context.bot.send_message(chat_id=chat_id, text="✅ Done! You can start interacting with me now.")
+    if query and query.data == "Onboard":
+        # Send onboarding message
+        onboarding_url = f"https://0md7u19ps1j.typeform.com/to/FTaSjCBr#user_id={user.id}"
+        keyboard = [[InlineKeyboardButton("Get Onboarded", url=onboarding_url)]]
+        reply_markup = InlineKeyboardMarkup(keyboard)
+        await query.message.edit_text(
+            "Get onboarded to access group discussions.",
+            reply_markup=reply_markup,
+        )
+    else:
+        # Default welcome message
+        await update.message.reply_text(
+            f"Hello {user.first_name}, SiVi here, your best AI assistant! You can use any of these commands to find your way around:\n\n"
+            "/bookcall - Book a call\n"
+            "/feedback - Send feedback\n"
+            "/help - Get help\n"
+            "/support - Talk to a support member\n\n"
+            'Or simply send me a personalized message with `/SiVi "your message"` and I will reply to you.\n'
+            "Join back the group for discussions with brilliant minds: [Join Group](https://t.me/beastvault).",
+            parse_mode="Markdown",
+        )
 
 
 # Function: Redirect to private chat if needed
@@ -162,6 +167,13 @@ async def detect_intent(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await redirect_to_private(update, context, "support")
 
 
+# Function: Handle Callback Queries
+async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+    if query:
+        await start(update, context)
+
+
 # Main function
 def main():
     application = Application.builder().token(BOT_TOKEN).build()
@@ -174,6 +186,7 @@ def main():
     application.add_handler(CommandHandler("help", lambda u, c: redirect_to_private(u, c, "help")))
     application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, user_joined))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, detect_intent))
+    application.add_handler(CallbackQueryHandler(handle_callback_query))
 
     print("Bot is running...")
     application.run_polling()
