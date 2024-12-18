@@ -20,11 +20,11 @@ async def redirect_to_private(update: Update, context: ContextTypes.DEFAULT_TYPE
     if update.message.chat.type != "private":  # Triggered in a group
         # Create an inline keyboard with a link to the bot's private chat
         button = [
-            [InlineKeyboardButton(f"Start private chat to use {command_text}", url=f"https://t.me/{BOT_USERNAME}?start=start")]
+            [InlineKeyboardButton(f"Talk to SiVi", url=f"https://t.me/{BOT_USERNAME}?start={command_text}")]
         ]
         reply_markup = InlineKeyboardMarkup(button)
         await update.message.reply_text(
-            f"To use the `{command_text}` command, please start a private chat with me:",
+            f" For `{command_text}` , Chat SiVi Directly",
             reply_markup=reply_markup
         )
         
