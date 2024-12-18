@@ -46,7 +46,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     user = update.effective_user
 
-    if query and query.data == "Onboard":
+    if query and query.message and "Get Onboarded" in query.message.text:
         # Send onboarding message
         onboarding_url = f"https://0md7u19ps1j.typeform.com/to/FTaSjCBr#user_id={user.id}"
         keyboard = [[InlineKeyboardButton("Get Onboarded", url=onboarding_url)]]
