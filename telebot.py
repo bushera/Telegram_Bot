@@ -17,6 +17,33 @@ SUPPORT_ADMINS = [7753388625]  # Replace with Telegram user IDs of your support 
 USER_JOINED_WEBHOOK = "https://hook.us2.make.com/7vhbgvnaseruqs9uuf244yfkqqgx9vuq"
 MESSAGE_WEBHOOK = "https://hook.us2.make.com/g4hce715tvne6qvc5tpjw1b3nf73f0ah"  # Replace with your webhook URL
 
+
+# Function: Trigger webhook for new user joins
+async def user_joined(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    user = update.message.new_chat_members[0]
+    payload = {
+        "user_id": user.id,
+        "username": user.username,
+        "first_name": user.first_name,
+        "last_name": user.last_name or "",
+        "full_name": f"{user.first_name} {user.last_name or ''}",
+        "chat_id": update.message.chat.id,
+        "language_code": user.language_code,
+        "is_bot": user.is_bot,
+        "bio": getattr(user, "bio", "No bio available"),
+    }
+    try:
+        response = requests.post(USER_JOINED_WEBHOOK, json=payload, timeout=10)
+        if response.status_code == 200:
+            print("User join webhook triggered successfully")
+        else:
+            print(f"Failed to trigger webhook: {response.status_code}")
+            print(f"Error response: {response.text}")
+    except requests.exceptions.RequestException as e:
+        print(f"Error triggering webhook: {str(e)}")
+
+
+
 # Function: Trigger webhook for messages (text, media, etc.)
 async def trigger_message_webhook(update: Update):
     message = update.message
