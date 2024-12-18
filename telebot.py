@@ -53,31 +53,27 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "/bookcall - Book a call\n"
             "/feedback - Send feedback\n"
             "/help - Get help\n"
-            "/support - Talk to a support member\n\n"
+            "/support - Talk to a support member\n"
+            "/getonboarded - Get access or change access to the Signal Vault group\n\n"
             'Or simply send me a personalized message with `/SiVi "your message"` and I will reply to you.\n\n'
             "Always join the great and brilliant minds @ the discussion group whenever: [Group Discussion Here](https://t.me/beastvault).",
             parse_mode="Markdown",
         )
 
 
-# Function: Handle Callback Queries
-async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    """Handles interactions with buttons."""
-    query = update.callback_query
+# Function: Get Onboarded Command Handler
+async def get_onboarded(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handles the `/getonboarded` command and sends the onboarding message."""
     user = update.effective_user
 
-    if query and query.message and "Get Onboarded" in query.message.text:
-        # Send onboarding message
-        onboarding_url = f"https://0md7u19ps1j.typeform.com/to/FTaSjCBr#user_id={user.id}"
-        keyboard = [[InlineKeyboardButton("Get Onboarded", url=onboarding_url)]]
-        reply_markup = InlineKeyboardMarkup(keyboard)
-        await query.message.edit_text(
-            "Get onboarded to access group discussions.",
-            reply_markup=reply_markup,
-        )
-    else:
-        # Fallback for unknown callback queries
-        await query.answer("Invalid action.")
+    onboarding_url = f"https://0md7u19ps1j.typeform.com/to/FTaSjCBr#user_id={user.id}"
+    keyboard = [[InlineKeyboardButton("Get Onboarded", url=onboarding_url)]]
+    reply_markup = InlineKeyboardMarkup(keyboard)
+
+    await update.message.reply_text(
+        "Get access / change access to group discussions.",
+        reply_markup=reply_markup,
+    )
 
 
 # Function: Redirect to private chat if needed
@@ -184,13 +180,13 @@ def main():
 
     # Handlers
     application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("getonboarded", get_onboarded))
     application.add_handler(CommandHandler("bookcall", lambda u, c: redirect_to_private(u, c, "bookcall")))
     application.add_handler(CommandHandler("feedback", lambda u, c: redirect_to_private(u, c, "feedback")))
     application.add_handler(CommandHandler("support", lambda u, c: redirect_to_private(u, c, "support")))
     application.add_handler(CommandHandler("help", lambda u, c: redirect_to_private(u, c, "help")))
     application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, user_joined))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, detect_intent))
-    application.add_handler(CallbackQueryHandler(handle_callback_query))
 
     print("Bot is running...")
     application.run_polling()
