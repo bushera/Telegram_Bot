@@ -93,6 +93,7 @@ async def redirect_to_private(update: Update, context: ContextTypes.DEFAULT_TYPE
             "feedback": feedback,
             "support": support,
             "help": help_command,
+            "start": start,
         }
         if command_text in command_map:
             await command_map[command_text](update, context)
