@@ -100,14 +100,15 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     # Ignore command messages or /start explicitly
     if message.entities:
         for entity in message.entities:
-            if entity.type == "bot_command":
+            if entity.type == "bot_command" and not message.text.startswith("/SiVi"):
                 return
 
     # Trigger webhook if message matches criteria
     if (
-        message.text and not message.text.startswith("/start") and (
+        message.text and (
             message.text.startswith("/SiVi") or  # Message starts with /SiVi
-            message.photo or message.audio or message.sticker or not message.entities
+            not message.text.startswith("/") or  # Plain text messages
+            message.photo or message.audio or message.sticker
         )
     ):
         await trigger_webhook(update, context)
@@ -235,6 +236,7 @@ def main():
     application.add_handler(CommandHandler("help", lambda u, c: redirect_to_private(u, c, "help")))
     application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, user_joined))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, detect_intent))
+    application.add_handler(MessageHandler(filters.TEXT, message_handler))
 
     print("Bot is running...")
     application.run_polling()
