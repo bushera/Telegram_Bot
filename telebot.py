@@ -43,6 +43,26 @@ async def user_joined(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Function: Start Command Handler
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handles the `/start` command and sends a default welcome message."""
+    user = update.effective_user
+
+    if update.message:
+        # Default welcome message for `/start` command
+        await update.message.reply_text(
+            f"Hello {user.first_name}! SiVi here, your best AI assistant! You can use any of these commands to find your way around:\n\n"
+            "/bookcall - Book a call\n"
+            "/feedback - Send feedback\n"
+            "/help - Get help\n"
+            "/support - Talk to a support member\n\n"
+            'Or simply send me a personalized message with `/SiVi "your message"` and I will reply to you.\n\n'
+            "Always join the great and brilliant minds @ the discussion group whenever: [Group Discussion Here](https://t.me/beastvault).",
+            parse_mode="Markdown",
+        )
+
+
+# Function: Handle Callback Queries
+async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """Handles interactions with buttons."""
     query = update.callback_query
     user = update.effective_user
 
@@ -56,17 +76,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup=reply_markup,
         )
     else:
-        # Default welcome message
-        await update.message.reply_text(
-            f"Hello {user.first_name}! SiVi here, your best AI assistant! You can use any of these commands to find your way around:\n\n"
-            "/bookcall - Book a call\n"
-            "/feedback - Send feedback\n"
-            "/help - Get help\n"
-            "/support - Talk to a support member\n\n"
-            'Or simply send me a personalized message with `/SiVi "your message"` and I will reply to you.\n\n'
-            "Always join the great and brilliant minds @ the discussion group whenever : [Group Discussion Here](https://t.me/beastvault).",
-            parse_mode="Markdown",
-        )
+        # Fallback for unknown callback queries
+        await query.answer("Invalid action.")
 
 
 # Function: Redirect to private chat if needed
@@ -165,13 +176,6 @@ async def detect_intent(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await redirect_to_private(update, context, "help")
     elif any(keyword in message for keyword in intents["support"]):
         await redirect_to_private(update, context, "support")
-
-
-# Function: Handle Callback Queries
-async def handle_callback_query(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    query = update.callback_query
-    if query:
-        await start(update, context)
 
 
 # Main function
