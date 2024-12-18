@@ -17,30 +17,7 @@ SUPPORT_ADMINS = [7753388625]  # Replace with Telegram user IDs of your support 
 USER_JOINED_WEBHOOK = "https://hook.us2.make.com/7vhbgvnaseruqs9uuf244yfkqqgx9vuq"
 MESSAGE_WEBHOOK = "https://hook.us2.make.com/g4hce715tvne6qvc5tpjw1b3nf73f0ah"  # Replace with your webhook URL
 
-# Function: Trigger webhook for new user joins
-async def user_joined(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    user = update.message.new_chat_members[0]
-    payload = {
-        "user_id": user.id,
-        "username": user.username,
-        "first_name": user.first_name,
-        "last_name": user.last_name or "",
-        "full_name": f"{user.first_name} {user.last_name or ''}",
-        "chat_id": update.message.chat.id,
-        "language_code": user.language_code,
-        "is_bot": user.is_bot,
-        "bio": getattr(user, "bio", "No bio available"),
-    }
-    try:
-        response = requests.post(USER_JOINED_WEBHOOK, json=payload, timeout=10)
-        if response.status_code == 200:
-            print("User join webhook triggered successfully")
-        else:
-            print(f"Failed to trigger webhook: {response.status_code}")
-    except Exception as e:
-        print(f"Error triggering webhook: {e}")
-
-# Function: Trigger webhook for messages
+# Function: Trigger webhook for messages (text, media, etc.)
 async def trigger_message_webhook(update: Update):
     message = update.message
     payload = {
@@ -219,24 +196,28 @@ async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 # Function: Detect intent based on user messages
 async def detect_intent(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    message = update.message.text.lower()
+    message = update.message
+    # Trigger the webhook for any kind of message (text, media, etc.)
+    await trigger_message_webhook(update)
+
+    # Check if the message contains specific commands or keywords (optional)
     intents = {
         "book_call": ["book a call", "schedule a call"],
         "feedback": ["give feedback", "feedback"],
         "help": ["help", "assist"],
         "support": ["talk to support", "get support"],
     }
-    if any(keyword in message for keyword in intents["book_call"]):
-        await redirect_to_private(update, context, "bookcall")
-    elif any(keyword in message for keyword in intents["feedback"]):
-        await redirect_to_private(update, context, "feedback")
-    elif any(keyword in message for keyword in intents["help"]):
-        await redirect_to_private(update, context, "help")
-    elif any(keyword in message for keyword in intents["support"]):
-        await redirect_to_private(update, context, "support")
-    else:
-        if not update.message.text.startswith("/"):
-            await trigger_message_webhook(update)
+
+    # Process text messages for specific commands (optional)
+    if message.text:
+        if any(keyword in message.text.lower() for keyword in intents["book_call"]):
+            await redirect_to_private(update, context, "bookcall")
+        elif any(keyword in message.text.lower() for keyword in intents["feedback"]):
+            await redirect_to_private(update, context, "feedback")
+        elif any(keyword in message.text.lower() for keyword in intents["help"]):
+            await redirect_to_private(update, context, "help")
+        elif any(keyword in message.text.lower() for keyword in intents["support"]):
+            await redirect_to_private(update, context, "support")
 
 # Main function
 def main():
@@ -249,11 +230,10 @@ def main():
     application.add_handler(CommandHandler("feedback", lambda u, c: redirect_to_private(u, c, "feedback")))
     application.add_handler(CommandHandler("support", lambda u, c: redirect_to_private(u, c, "support")))
     application.add_handler(CommandHandler("help", lambda u, c: redirect_to_private(u, c, "help")))
-    application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, user_joined))
-    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, detect_intent))
+    application.add_handler(MessageHandler(filters.TEXT, detect_intent))
+    application.add_handler(MessageHandler(filters.ALL, detect_intent))  # For all message types
 
-    print("Bot is running...")
     application.run_polling()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
