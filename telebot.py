@@ -85,6 +85,21 @@ async def trigger_message_webhook(update: Update):
             "reply_to_message": message.reply_to_message.to_dict() if message.reply_to_message else None,
         },
     }
+
+    # Capture any media inputs (audio, video, document, etc.) along with text
+    if message.audio:
+        payload['message']['audio'] = message.audio.to_dict()
+    if message.video:
+        payload['message']['video'] = message.video.to_dict()
+    if message.document:
+        payload['message']['document'] = message.document.to_dict()
+    if message.photo:
+        payload['message']['photo'] = [photo.to_dict() for photo in message.photo]
+    if message.voice:
+        payload['message']['voice'] = message.voice.to_dict()
+    if message.video_note:
+        payload['message']['video_note'] = message.video_note.to_dict()
+
     try:
         response = requests.post(MESSAGE_WEBHOOK, json=payload, timeout=10)
         if response.status_code == 200:
