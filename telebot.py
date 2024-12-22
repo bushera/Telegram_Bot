@@ -211,7 +211,7 @@ async def support(update: Update, context: ContextTypes.DEFAULT_TYPE):
         f"🔔 **New Support Request** 🔔\n\n"
         f"👤 **User Contact**: @{user.username if user.username else 'No username'}\n"
         f"🆔 **User ID**: {user.id}\n"
-	f"📩 **Support Request**: {feedback_message}\n"
+	f"📩 **Support Request**: {support_message}\n"
     )
     for admin_id in SUPPORT_ADMINS:
         try:
