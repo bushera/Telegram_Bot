@@ -200,11 +200,22 @@ async def feedback(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Function: Support
 async def support(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user = update.message.chat
-    await update.message.reply_text("A support member will reach out to you shortly. Please hold on.")
+
+
+	support_message = " ".join(context.args) if context.args else None
+
+    if not support_message:
+        await update.message.reply_text("Please drop your request for support. Example: /support Great bot!")
+        return
+
+
+
+    await update.message.reply_text("A support member will reach out to you shortly, replies usually takes less than 24hrs. You'll be notified once you get a reply, keep enjoying the SignalVault group experience.")
     admin_message = (
         f"🔔 **New Support Request** 🔔\n\n"
         f"👤 **User Contact**: @{user.username if user.username else 'No username'}\n"
         f"🆔 **User ID**: {user.id}\n"
+	f"📩 **Support Request**: {feedback_message}\n"
     )
     for admin_id in SUPPORT_ADMINS:
         try:
