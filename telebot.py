@@ -127,7 +127,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             "/feedback - Send feedback\n"
             "/help - Get help\n"
             "/support - Talk to a support member\n\n"
-            'Or simply send me a personalized message with `/SiVi "your message"` and I will reply to you.\n\n'
+            'Or simply send me a personalized message with `@SiVi "your message"` and I will reply to you.\n\n'
             "Always join the great and brilliant minds @ the discussion group whenever: [Group Discussion Here](https://t.me/beastvault).",
             parse_mode="Markdown",
         )
