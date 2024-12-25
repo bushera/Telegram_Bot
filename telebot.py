@@ -137,7 +137,7 @@ async def get_onboarded(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Handles the `/getonboarded` command and sends the onboarding message."""
     user = update.effective_user
 
-    onboarding_url = f"https://0md7u19ps1j.typeform.com/to/FTaSjCBr#user_id={user.id}"
+    onboarding_url = f"https://airtable.com/appXp6xdpgGsIcpf0/shr5klSqw2R3Cipfo?prefill_User%20ID={user.id}"
     keyboard = [[InlineKeyboardButton("Get Onboarded", url=onboarding_url)]]
     reply_markup = InlineKeyboardMarkup(keyboard)
 
