@@ -10,8 +10,8 @@ from telegram.ext import (
 )
 
 # Bot Token and Webhook URLs
-BOT_TOKEN = "7225931117:AAFP4haOX6lHuTFvsElH-KhzYRNC53noF_M"  # Replace with your bot's token
-BOT_USERNAME = "VaultSignalBot"  # Replace with your bot's username, without '@'
+BOT_TOKEN = "7938484585:AAEuGma-9awLS1RyZGSTiagP_SEc8JChAwk"  # Replace with your bot's token
+BOT_USERNAME = "VaultSiBot"  # Replace with your bot's username, without '@'
 SUPPORT_ADMINS = [7753388625]  # Replace with Telegram user IDs of your support team
 
 USER_JOINED_WEBHOOK = "https://hook.us2.make.com/7vhbgvnaseruqs9uuf244yfkqqgx9vuq"
@@ -170,7 +170,7 @@ async def redirect_to_private(update: Update, context: ContextTypes.DEFAULT_TYPE
 
 # Function: Book a call
 async def book_call(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    web_app_url = "https://t.me/VaultSignalBot/Sigvault"
+    web_app_url = "http://t.me/VaultSiBot/BookCall"
     keyboard = [[InlineKeyboardButton("Book a Call", url=web_app_url)]]
     reply_markup = InlineKeyboardMarkup(keyboard)
     await update.message.reply_text("Click below to book a call:", reply_markup=reply_markup)
