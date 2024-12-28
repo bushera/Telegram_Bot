@@ -12,7 +12,7 @@ from telegram.ext import (
 # Bot Token and Webhook URLs
 BOT_TOKEN = "7938484585:AAEuGma-9awLS1RyZGSTiagP_SEc8JChAwk"  # Replace with your bot's token
 BOT_USERNAME = "VaultSiBot"  # Replace with your bot's username, without '@'
-SUPPORT_ADMINS = [7753388625, 1578128439]  # Replace with Telegram user IDs of your support team
+SUPPORT_ADMINS = ["7753388625","1578128439"]  # Replace with Telegram user IDs of your support team
 
 USER_JOINED_WEBHOOK = "https://hook.us2.make.com/7vhbgvnaseruqs9uuf244yfkqqgx9vuq"
 MESSAGE_WEBHOOK = "https://hook.us2.make.com/g4hce715tvne6qvc5tpjw1b3nf73f0ah"  # Replace with your webhook URL
