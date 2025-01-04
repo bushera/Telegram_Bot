@@ -121,8 +121,8 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.message:
         # Default welcome message for `/start` command
         await update.message.reply_text(
-            f"Hello {user.first_name}! SiVi here, Join the Next Gen all in one community ! You can use any of these commands to find your way around:\n\n"
-            "/getonboarded - Use this to get  access to the community\n\n"
+            f"Hello {user.first_name}! SiVi here, Join the Next Gen all-in-one (crypto, ai, gaming) community : [Group Discussion Here](https://t.me/TheSignal_Vault1) ! You can use any of these commands to find your way around:\n\n"
+            "/getonboarded - Use this to gain full chat access to the community\n\n"
             "/bookcall - Book a call\n"
             "/feedback - Send feedback\n"
             "/help - Get help\n"
