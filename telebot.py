@@ -252,7 +252,7 @@ async def detect_intent(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await redirect_to_private(update, context, "feedback")
         elif any(keyword in message.text.lower() for keyword in intents["help"]):
             await redirect_to_private(update, context, "help")
-		elif any(keyword in message.text.lower() for keyword in intents["onboarding"]):
+	elif any(keyword in message.text.lower() for keyword in intents["onboarding"]):
             await redirect_to_private(update, context, "onboarding")
         elif any(keyword in message.text.lower() for keyword in intents["support"]):
             await redirect_to_private(update, context, "support")
