@@ -142,7 +142,7 @@ async def get_onboarded(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     await update.message.reply_text(
-        "Get access to the SignalVault group discussions.",
+        "To get access to the SignalVaut trade insights community. Just click the button below and start earning with our experts trade points and insights",
         reply_markup=reply_markup,
     )
 
@@ -164,6 +164,7 @@ async def redirect_to_private(update: Update, context: ContextTypes.DEFAULT_TYPE
             "support": support,
             "help": help_command,
             "start": start,
+	    "onboarding" : get_onboarded,
         }
         if command_text in command_map:
             await command_map[command_text](update, context)
@@ -240,6 +241,7 @@ async def detect_intent(update: Update, context: ContextTypes.DEFAULT_TYPE):
         "feedback": ["give feedback", "feedback"],
         "help": ["help", "assist"],
         "support": ["talk to support", "get support"],
+	"onboarding": ["how to start", "get onboarded", "start"],
     }
 
     # Process text messages for specific commands (optional)
@@ -252,6 +254,8 @@ async def detect_intent(update: Update, context: ContextTypes.DEFAULT_TYPE):
             await redirect_to_private(update, context, "help")
         elif any(keyword in message.text.lower() for keyword in intents["support"]):
             await redirect_to_private(update, context, "support")
+	elif any(keyword in message.text.lower() for keyword in intents["onboarding"]):
+            await redirect_to_private(update, context, "onboarding")
 
 # Main function
 def main():
@@ -264,6 +268,7 @@ def main():
     application.add_handler(CommandHandler("feedback", lambda u, c: redirect_to_private(u, c, "feedback")))
     application.add_handler(CommandHandler("support", lambda u, c: redirect_to_private(u, c, "support")))
     application.add_handler(CommandHandler("help", lambda u, c: redirect_to_private(u, c, "help")))
+    application.add_handler(CommandHandler("help", lambda u, c: redirect_to_private(u, c, "onboarding")))
     application.add_handler(MessageHandler(filters.StatusUpdate.NEW_CHAT_MEMBERS, user_joined))
     application.add_handler(MessageHandler(filters.TEXT, detect_intent))
     application.add_handler(MessageHandler(filters.ALL, detect_intent))  # For all message types
