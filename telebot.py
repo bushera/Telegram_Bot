@@ -142,7 +142,7 @@ async def get_onboarded(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = InlineKeyboardMarkup(keyboard)
 
     await update.message.reply_text(
-        "To get access to the SignalVaut trade insights community.\nJust click the button below and start earning with our experts trade points and insights",
+        "To get access to the SignalVaut trade insights community.\n\nJust click the button below and start earning with our experts trade points and insights",
         reply_markup=reply_markup,
     )
 
